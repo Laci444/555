@@ -1,14 +1,18 @@
 from rest_framework import permissions, viewsets
 
 from .models import Article, Profile
-from .permissions import (CanCreateArticle, CanViewHiddenArticles,
-                          IsAuthorOrReadOnly)
-from .serializers import (ArticleListSerializer, ArticleSerializer,
-                          ProfileListSerializer, ProfileSerializer)
+from .permissions import CanCreateArticle, CanViewHiddenArticles, IsAuthorOrReadOnly
+from .serializers import (
+    ArticleListSerializer,
+    ArticleSerializer,
+    ProfileListSerializer,
+    ProfileSerializer,
+)
 
 
 class AuthorViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
+    lookup_field = "username"
 
     def get_queryset(self):
         return Profile.objects.filter(user_permissions__codename="is_public")

@@ -24,6 +24,8 @@ SECRET_KEY = "django-insecure-lpz^o65f&672f12($c+5%z_ve#lt37&*yp(h7tnuo0x$2tlw!d
 HASHIDS_SALT = "secret-salt-remove-before-publish"
 HASHIDS_MIN_LENGTH = 6
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -33,17 +35,23 @@ ALLOWED_HOSTS: list[str] = []
 
 INSTALLED_APPS = [
     "news.apps.NewsConfig",
+    "api_auth.apps.AuthConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
+    "django_editorjs",
     # "rest_wind",
     "rest_framework",
+    "rest_framework_simplejwt",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -105,9 +113,26 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = "auth.Profile"
 
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
     "DEFAULT_PERMISSION_CLASSES": [
         "news.permissions.ReadOnlyPermission",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SIMPLE_JWT = {
+    # TODO: SIGNING_KEY
+    "USER_ID_CLAIM": "sub",
+    "TOKEN_OBTAIN_SERIALIZER": "api_auth.serializers.TokenObtainPairSerializer",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "555 News API",
+    "DESCRIPTION": "API docs for 555 News",
+    "VERSION": "1.0.0",
 }
 
 
@@ -127,6 +152,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

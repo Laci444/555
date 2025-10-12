@@ -8,8 +8,10 @@ class ProfileListSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ("id", "url", "full_name", "profile_image")
-        extra_kwargs = {"url": {"view_name": "author-detail"}}
+        fields = ("username", "url", "full_name", "profile_image")
+        extra_kwargs = {
+            "url": {"view_name": "author-detail", "lookup_field": "username"}
+        }
 
     def get_full_name(self, obj):
         return obj.get_full_name()
@@ -21,7 +23,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Profile
         fields = [
-            "id",
+            "username",
             "full_name",
             "profile_image",
             "email",
@@ -54,10 +56,10 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
             "id",
             "title",
             "summary",
-            "content",
+            "author",
             "created_at",
             "updated_at",
-            "author",
+            "content",
             "visible",
         ]
         extra_kwargs = {
