@@ -38,11 +38,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          version: 24.9.x
+          node-version: 24.9.x
           cache: pnpm
           cache-dependency-path: frontend/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install
+      - name: Export repo name
+        run: echo ::set-env name=VITE_BASE_PATH::/${GITHUB_REPOSITORY#*/}/
       - name: Build frontend
         run: pnpm run build
       - name: Upload build output
