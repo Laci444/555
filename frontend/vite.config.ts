@@ -6,7 +6,7 @@ import svgr from "vite-plugin-svgr";
 import devtoolsJson from "vite-plugin-devtools-json";
 
 export default defineConfig({
-  base: process.env.VITE_BASE_PATH || "/",
+  base: process.env.BASE_PATH || "/",
   plugins: [
     tailwindcss(),
     svgr(),
