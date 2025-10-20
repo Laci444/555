@@ -7,4 +7,7 @@ router = DefaultRouter()
 router.register("authors", AuthorViewSet, basename="author")
 router.register("articles", ArticleViewSet, basename="article")
 
-urlpatterns = [path("", include(router.urls))]
+urlpatterns = [
+    path("", include(router.urls)),
+    path("editor-js/", include("editor_js.urls")),
+]
