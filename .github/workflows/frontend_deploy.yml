@@ -49,6 +49,7 @@ jobs:
         run: pnpm run build
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_API_MODE: mock
       - name: Upload build output
         uses: actions/upload-pages-artifact@v4
         with:
