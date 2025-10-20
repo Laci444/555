@@ -17,3 +17,9 @@ export interface ArticleDetail extends ArticleCommon {
   content: EditorJS.OutputData;
   updated_at: Date;
 }
+
+export interface ArticleFormData {
+  title: string;
+  summary: string;
+  content: EditorJS.OutputData;
+}

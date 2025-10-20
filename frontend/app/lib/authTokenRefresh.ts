@@ -3,7 +3,7 @@ import { auth } from "~/services/auth";
 import type { UserState } from "~/types/auth";
 
 export const refresh: createRefreshAttribute<UserState> = {
-  interval: 240 * 1000,
+  interval: 4 * 60 * 1000,
   refreshApiCallback: async (param) => {
     try {
       const response = await auth.refreshAccessToken(param.refreshToken ?? "");
@@ -12,7 +12,6 @@ export const refresh: createRefreshAttribute<UserState> = {
         newAuthToken: response.access,
       };
     } catch (error) {
-      console.log(error);
       return {
         isSuccess: false,
       };

@@ -15,10 +15,6 @@
 		"rootDirs": [".", "./.react-router/types"],
 		"baseUrl": ".",
 		"paths": {
-			//"editorjs-alert": ["./app/types/editorjs-alert.d.ts"],
-			//"@bomdi/codebox": ["./app/types/codebox.d.ts"],
-			//"@calumk/editorjs-columns": ["./app/types/editorjs-columns.d.ts"],
-			//"@editorjs/text-variant-tune": ["./app/types/text-variant-tune.d.ts"],
 			"~/*": ["./app/*"]
 		},
 		"esModuleInterop": true,

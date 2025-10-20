@@ -39,8 +39,6 @@ export default function LoginPopover({
     try {
       const data = await auth.login(values);
 
-      console.debug(data);
-
       const success = signIn({
         auth: {
           token: data.access,
@@ -52,7 +50,6 @@ export default function LoginPopover({
         refresh: data.refresh,
       });
       if (success) {
-        console.debug("logged in");
         setOpen(false);
         toast.success("Logged in");
       } else {

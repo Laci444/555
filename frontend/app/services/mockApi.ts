@@ -1,7 +1,12 @@
-import type { ArticleDetail, ArticleListItem } from "~/types/article";
+import type {
+  ArticleDetail,
+  ArticleFormData,
+  ArticleListItem,
+} from "~/types/article";
 import type { AuthorDetail, AuthorListItem } from "~/types/author";
 import { authors } from "~/mocks/authorData";
 import { articles } from "~/mocks/articleData";
+import type { ApiService } from "~/types/services";
 
 function mapArticles(articleDetails: ArticleDetail[]): ArticleListItem[] {
   return articleDetails.map((article) => ({
@@ -23,20 +28,20 @@ function mapAuthors(authorDetails: AuthorDetail[]): AuthorListItem[] {
   }));
 }
 
-export const mockApi = {
+export const mockApi: ApiService = {
   async getArticles(): Promise<ArticleListItem[]> {
     return mapArticles(articles).sort(
       (a, b) => b.created_at.getTime() - a.created_at.getTime(),
     );
   },
 
-  async getArticleById(id: string): Promise<ArticleDetail | undefined> {
-    return articles.find((article) => article.id === id);
+  async getArticleById(id: string): Promise<ArticleDetail> {
+    return articles.find((article) => article.id === id)!;
   },
 
-  async editArticleById(
+  async editArticle(
     id: string,
-    data: { title: string; summary: string; content: EditorJS.OutputData },
+    data: ArticleFormData,
     authHeader?: string,
   ): Promise<void> {
     if (!authHeader) {
@@ -57,8 +62,8 @@ export const mockApi = {
     return mapAuthors(authors);
   },
 
-  async getAuthorById(username: string): Promise<AuthorDetail | undefined> {
-    return authors.find((author) => author.username === username);
+  async getAuthorByName(username: string): Promise<AuthorDetail> {
+    return authors.find((author) => author.username === username)!;
   },
 
   async createArticle(

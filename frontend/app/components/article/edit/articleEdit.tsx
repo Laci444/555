@@ -15,7 +15,7 @@ export default function ArticleEdit({ article }: { article: ArticleDetail }) {
   const handleSave = async (data: any) => {
     setIsSaving(true);
     try {
-      await api.editArticleById(article.id, data, authHeader);
+      await api.editArticle(article.id, data, authHeader);
       toast.success("Article updated successfully");
       navigate(location.pathname.replace("/edit", ""));
     } catch {
