@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django_editorjs import EditorJsField
+
+# from django_editorjs2.fields import EditorJSField
+from editor_js.fields import EditorJSField
 from hashids import Hashids
 
 
@@ -23,7 +25,6 @@ class Profile(AbstractUser):
         return self.username
 
     class Meta:
-        app_label = "auth"
         permissions = [("is_public", "Publicly accessible")]
 
 
@@ -32,8 +33,8 @@ class Article(models.Model):
 
     title = models.CharField(max_length=200)
     summary = models.CharField(max_length=500)
-    content = EditorJsField()
-    visible = models.BooleanField(default=False)
+    content = EditorJSField()
+    visible = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

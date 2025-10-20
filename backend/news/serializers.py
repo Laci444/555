@@ -13,7 +13,7 @@ class ProfileListSerializer(serializers.HyperlinkedModelSerializer):
             "url": {"view_name": "author-detail", "lookup_field": "username"}
         }
 
-    def get_full_name(self, obj):
+    def get_full_name(self, obj: Profile) -> str:
         return obj.get_full_name()
 
 
@@ -30,7 +30,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
             "bio",
         ]
 
-    def get_full_name(self, obj):
+    def get_full_name(self, obj: Profile) -> str:
         return obj.get_full_name()
 
 
