@@ -11,7 +11,9 @@ import {
 import ArticleCard from "~/components/article/articleCard";
 
 export async function clientLoader() {
-  return api.getArticles().then((a) => a.slice(0, 6));
+  return api.getArticles().then((a) => {
+    return a.slice(0, 6);
+  });
 }
 
 export default function Index({ loaderData }: Route.ComponentProps) {

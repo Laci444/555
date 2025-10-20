@@ -16,10 +16,7 @@ export default function ArticleNew() {
   const handleCreate = async (data: any) => {
     setIsSaving(true);
     try {
-      const newArticle = await api.createArticle(
-        { ...data, username: authUser.username },
-        authHeader,
-      );
+      const newArticle = await api.createArticle(data, authHeader);
       toast.success("Article created successfully");
       navigate(`/articles/${newArticle.id}`);
     } catch {

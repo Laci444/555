@@ -1,6 +1,7 @@
 import type { LoginCredentials } from "~/types/auth";
+import type { AuthService } from "~/types/services";
 
-export const mockAuth = {
+export const mockAuth: AuthService = {
   async login(_credentials: LoginCredentials) {
     return {
       refresh:
