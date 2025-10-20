@@ -19,7 +19,6 @@ export default function LogoutDropdown({
   const authUser = useAuthUser<UserState>();
   async function handleLogout() {
     signOut();
-    console.debug("signed out");
     toast.success("Signed out");
   }
   return (
@@ -31,7 +30,7 @@ export default function LogoutDropdown({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
-        <DropdownMenuLabel>{authUser.username}</DropdownMenuLabel>
+        <DropdownMenuLabel>{authUser?.username}</DropdownMenuLabel>
         <DropdownMenuItem disabled>
           <Settings />
           Settings

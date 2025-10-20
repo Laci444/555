@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import svgr from "vite-plugin-svgr";
 import devtoolsJson from "vite-plugin-devtools-json";
+import { replaceCodePlugin } from "vite-plugin-replace";
 
 export default defineConfig({
   base: process.env.BASE_PATH || "/",
@@ -13,5 +14,13 @@ export default defineConfig({
     reactRouter(),
     tsconfigPaths(),
     devtoolsJson(),
+    replaceCodePlugin({
+      replacements: [
+        {
+          from: "__BASE_PATH",
+          to: process.env.BASE_PATH || "/",
+        },
+      ],
+    }),
   ],
 });

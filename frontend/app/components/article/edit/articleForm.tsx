@@ -15,12 +15,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { Button } from "~/components/ui/button";
 import { toast } from "sonner";
 import type { OutputData } from "@editorjs/editorjs";
-
-export interface ArticleFormData {
-  title: string;
-  summary: string;
-  content: OutputData;
-}
+import type { ArticleFormData } from "~/types/article";
 
 interface ArticleFormProps {
   defaultValues?: {
@@ -60,11 +55,6 @@ export function ArticleForm({
     });
 
     editorRef.current = editor;
-
-    return () => {
-      editor.destroy?.();
-      editorRef.current = null;
-    };
   }, []);
 
   const handleSubmit = async (data: { title: string; summary: string }) => {

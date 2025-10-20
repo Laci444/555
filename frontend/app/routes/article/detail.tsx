@@ -5,12 +5,14 @@ import { Flipped } from "react-flip-toolkit";
 
 export async function clientLoader({ params }: Route.LoaderArgs) {
   const result = await api.getArticleById(params.id);
+  /*
   if (!result) {
     throw new Response("Article not found", {
       status: 404,
       statusText: "Not found",
     });
   }
+  */
   return result!;
 }
 
