@@ -1,8 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
-# from django_editorjs2.fields import EditorJSField
 from editor_js.fields import EditorJSField
 from hashids import Hashids
 

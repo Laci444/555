@@ -1,8 +1,4 @@
-import logging
-
 from rest_framework import permissions
-
-logger = logging.getLogger(__name__)
 
 
 class ReadOnlyPermission(permissions.BasePermission):
@@ -29,5 +25,4 @@ class CanViewHiddenArticles(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if obj.visible:
             return True
-
         return request.user.has_perm("news.add_article")
