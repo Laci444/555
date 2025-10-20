@@ -27,7 +27,9 @@ jobs:
 
       - name: Extract short SHA
         id: vars
-        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+        run: |
+          echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+          echo "IMAGE_NAME_LOWERCASE"=$(echo ${IMAGE_NAME} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -35,7 +37,7 @@ jobs:
           context: "{{defaultContext}}:backend"
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ env.SHORT_SHA }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}:sha-${{ env.SHORT_SHA }}
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
