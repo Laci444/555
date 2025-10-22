@@ -1,4 +1,9 @@
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv("../../.env")
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -9,6 +14,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 ALLOWED_HOSTS: list[str] = ["*"]
 
 ASGI_APPLICATION = "main.asgi.application"
+
+USE_X_FORWARDED_HOST = os.environ.get("BEHIND_PROXY", "false") == "true"
 
 # Application definition
 
