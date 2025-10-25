@@ -57,6 +57,9 @@ jobs:
             ${{ inputs.version != '' && format('type=semver,pattern={{version}},value={0}', inputs.version) || '' }}
             ${{ inputs.version != '' && format('type=semver,pattern={{major}}.{{minor}},value={0}', inputs.version) || '' }}
             ${{ inputs.version != '' && format('type=semver,pattern={{major}},value={0}', inputs.version) || '' }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.description="Backend application of the 555 News portal."
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
