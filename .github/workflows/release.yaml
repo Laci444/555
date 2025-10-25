@@ -1,0 +1,60 @@
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions: 
+  packages: write
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  backend:
+    name: Build backend image
+    uses: ./.github/workflows/backend_build.yaml
+    with:
+      version: ${{ github.ref_name }}
+
+  frontend:
+    name: Build frontend artifact
+    uses: ./.github/workflows/frontend_deploy.yaml
+    with:
+      base_path: ''
+      api_mode: 'production'
+      skip_deploy: true
+
+  changelog:
+    name: Generate changelog
+    runs-on: ubuntu-latest
+    outputs:
+      changelog: ${{ steps.build.outputs.changelog }}
+    steps:
+      - name: Build changelog
+        id: build
+        uses: mikepenz/release-changelog-builder-action@v6.0.0
+        with:
+          mode: HYBRID
+
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [backend, frontend, changelog]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      - name: Download frontend build artifact
+        uses: actions/download-artifact@v6
+        id: artifact_download
+        with:
+          artifact-ids: ${{ needs.frontend.outputs.artifact_id }}
+      - name: Rename artifact
+        run: |
+          mv ${{ steps.artifact_download.outputs.download-path }}/artifact.tar ${{ steps.artifact_download.outputs.download-path }}/frontend_static.tar
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{ needs.changelog.outputs.changelog }}
+          files: ${{ steps.artifact_download.outputs.download-path }}/frontend_static.tar
+
