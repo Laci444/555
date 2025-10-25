@@ -5,7 +5,26 @@ on:
     branches: ["main"]
     paths:
       - "frontend/**"
-  workflow_dispatch: # allows manual trigger from GitHub UI
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      base_path:
+        description: "Base path for which the paths will be built relatively"
+        required: false
+        type: string
+      api_mode:
+        description: "If set to 'mock' the provided mock implementations will be used"
+        required: false
+        default: mock
+        type: string
+      skip_deploy:
+        description: "If true, skip GitHub Pages deployment"
+        required: false
+        type: boolean
+    outputs:
+      artifact_id:
+        description: "Build artifact ID"
+        value: ${{ jobs.build.outputs.artifact_id }}
 
 permissions:
   contents: read
@@ -22,9 +41,8 @@ jobs:
     defaults:
       run:
         working-directory: frontend
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      artifact_id: ${{ steps.upload.outputs.artifact_id }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -48,14 +66,16 @@ jobs:
       - name: Build frontend
         run: pnpm run build
         env:
-          BASE_PATH: /${{ github.event.repository.name }}/
-          VITE_API_MODE: mock
+          BASE_PATH: ${{ inputs.base_path || format('/{0}/', github.event.repository.name) }}
+          VITE_API_MODE: ${{ inputs.api_mode }}
       - name: Upload build output
         uses: actions/upload-pages-artifact@v4
+        id: upload
         with:
           path: frontend/build/client
   
   deploy:
+    if: ${{ !inputs.skip_deploy }}
     name: Deploy to GitHub Pages
     needs: build
     runs-on: ubuntu-latest
