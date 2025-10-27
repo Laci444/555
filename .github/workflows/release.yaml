@@ -1,3 +1,5 @@
+name: Release
+
 on:
   push:
     tags:
@@ -33,8 +35,6 @@ jobs:
       - name: Build changelog
         id: build
         uses: mikepenz/release-changelog-builder-action@v6.0.0
-        with:
-          mode: HYBRID
 
   release:
     name: Create GitHub Release
@@ -48,13 +48,24 @@ jobs:
         id: artifact_download
         with:
           artifact-ids: ${{ needs.frontend.outputs.artifact_id }}
-      - name: Rename artifact
+      - name: Compress artifact
         run: |
-          mv ${{ steps.artifact_download.outputs.download-path }}/artifact.tar ${{ steps.artifact_download.outputs.download-path }}/frontend_static.tar
+          cd ${{ steps.artifact_download.outputs.download-path }}
+          gzip -c artifact.tar > frontend.tar.gz
+      - name: Create compose file
+        env:
+          APP_VERSION: ${{ github.ref_name }}
+          FORCE_UPDATE_FRONTEND: false
+        run: |
+          mv compose.yaml compose.template.yaml
+          envsubst '$APP_VERSION $FORCE_UPDATE_FRONTEND' < compose.template.yaml > compose.yaml
       - name: Create GitHub Release
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
           body: ${{ needs.changelog.outputs.changelog }}
-          files: ${{ steps.artifact_download.outputs.download-path }}/frontend_static.tar
+          files: |
+            ${{ steps.artifact_download.outputs.download-path }}/frontend.tar.gz
+            compose.yaml
+            nginx.conf
 
