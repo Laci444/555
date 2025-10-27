@@ -1,0 +1,56 @@
+name: "555"
+
+services:
+  init:
+    image: alpine/curl:latest
+    environment:
+      VERSION: ${APP_VERSION}
+      FORCE_UPDATE: ${FORCE_UPDATE_FRONTEND}
+    volumes:
+      - frontend_files:/data/frontend
+      - nginx_config:/data/nginx
+    command: >
+      sh -c '
+        if [ "$$FORCE_UPDATE" != "true" ] && [ "$(cat /data/nginx/.version 2>/dev/null)" = "$$VERSION" ]; then exit 0; fi;
+        echo "Updating to version $$VERSION"
+        rm -rf /data/frontend/* /data/nginx/*
+        curl -fsSL https://github.com/laci444/555/releases/download/$$VERSION/frontend.tar.gz | tar -xz -C /data/frontend/
+        curl -fsSL -o /data/nginx/default.conf https://github.com/laci444/555/releases/download/$$VERSION/nginx.conf
+        echo $$VERSION > /data/nginx/.version
+      '
+  backend:
+    image: ghcr.io/laci444/555-backend:${APP_VERSION}
+    container_name: backend
+    expose:
+      - "8000"
+    environment:
+      DJANGO_SECRET_KEY: "testvalue" 
+      HASHIDS_SALT: "testvalue" 
+      RUN_MIGRATE: true 
+      LOAD_MOCK_DATA: true
+      BEHIND_PROXY: true
+    volumes:
+      - static_files:/app/static
+      - media_files:/app/media
+      - db_data:/app/database
+
+  http:
+    image: nginx:alpine
+    container_name: http
+    depends_on:
+      - init
+      - backend
+    ports:
+      - "80:80"
+    volumes:
+      - nginx_config:/etc/nginx/conf.d
+      - frontend_files:/var/www/frontend:ro
+      - static_files:/var/www/static:ro
+      - media_files:/var/www/media:ro
+
+volumes:
+  nginx_config:
+  frontend_files:
+  static_files:
+  media_files:
+  db_data:

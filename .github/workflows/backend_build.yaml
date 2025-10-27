@@ -46,17 +46,31 @@ jobs:
         run: |
           echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
           echo "IMAGE_NAME"=$(echo ${image_name} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
+          if [ -z "${{ inputs.version }}" ]; then
+            TAGS="type=sha"
+          else
+            VERSION="${{ inputs.version }}"
+            TAGS=$(cat <<EOF
+          type=sha
+          type=semver,pattern={{version}},value=${VERSION}
+          type=semver,pattern={{major}}.{{minor}},value=${VERSION}
+          type=semver,pattern={{major}},value=${VERSION}
+          EOF
+            )
+          fi
+
+          {
+            echo "TAGS<<EOF"
+            echo "$TAGS"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
 
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.registry }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=sha
-            ${{ inputs.version != '' && format('type=semver,pattern={{version}},value={0}', inputs.version) || '' }}
-            ${{ inputs.version != '' && format('type=semver,pattern={{major}}.{{minor}},value={0}', inputs.version) || '' }}
-            ${{ inputs.version != '' && format('type=semver,pattern={{major}},value={0}', inputs.version) || '' }}
+          tags: ${{ env.TAGS }}
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.description="Backend application of the 555 News portal."
