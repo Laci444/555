@@ -68,4 +68,3 @@ jobs:
             ${{ steps.artifact_download.outputs.download-path }}/frontend.tar.gz
             compose.yaml
             nginx.conf
-
